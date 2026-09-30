@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Tanaya Khade — AI/ML Engineer & Data Science Portfolio." />
+  <title>Tanaya Khade — AI/ML & Data Science Portfolio</title>
+  
+  <!-- Canvas Confetti & Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg: #050b14;
+      --bg-card: rgba(13, 25, 42, 0.65);
+      --border: rgba(114, 214, 255, 0.18);
+      --border-glow: rgba(114, 214, 255, 0.45);
+      --text: #f0f6fc;
+      --muted: #8b9eb7;
+      --accent-cyan: #72d6ff;
+      --accent-purple: #a072ff;
+      --accent-green: #39d353;
+      --accent-orange: #ff9e3b;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f7fc;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --border: rgba(15, 76, 129, 0.18);
+      --border-glow: rgba(15, 76, 129, 0.45);
+      --text: #0d192a;
+      --muted: #53647b;
+      --accent-cyan: #0077cc;
+      --accent-purple: #6b3ba7;
+      --accent-green: #1a7f37;
+      --accent-orange: #d96b00;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overflow-x: hidden;
+      line-height: 1.6;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Interactive Background Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+    .container { width: min(1140px, calc(100% - 48px)); margin: 0 auto; }
+
+    /* Glassmorphic Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 76px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      display: grid;
+      place-items: center;
+      color: #000;
+      font-weight: 900;
+      box-shadow: 0 0 15px rgba(114, 214, 255, 0.4);
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent-cyan); }
+
+    /* Interactive Buttons */
+    .btn-group { display: flex; gap: 12px; align-items: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #050b14;
+      border: none;
+      box-shadow: 0 4px 20px rgba(114, 214, 255, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 30px rgba(160, 114, 255, 0.5);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 20px rgba(114, 214, 255, 0.15);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 120px 0 80px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(57, 211, 83, 0.1);
+      border: 1px solid rgba(57, 211, 83, 0.3);
+      color: var(--accent-green);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 0 0 rgba(57, 211, 83, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(57, 211, 83, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(57, 211, 83, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(57, 211, 83, 0); }
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      margin-bottom: 32px;
+      max-width: 580px;
+    }
+
+    /* Hero Interactive Code Card */
+    .hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+    }
+    .card-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .code-block {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #d4d4d4;
+    }
+    .code-keyword { color: #569cd6; }
+    .code-string { color: #ce9178; }
+    .code-func { color: #dcdcaa; }
+
+    /* Scroll Animations Target */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Section Headers */
+    section { padding: 100px 0; }
+    .section-head {
+      margin-bottom: 50px;
+    }
+    .section-eyebrow {
+      color: var(--accent-cyan);
+      font-family: monospace;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    /* Grid Layouts */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    /* Glass Cards with Tilt & Glow */
+    .glass-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .glass-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(114, 214, 255, 0.15);
+    }
+
+    /* Interactive Skills Bars */
+    .skill-item { margin-bottom: 20px; }
+    .skill-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; font-weight: 600; }
+    .skill-bar-bg {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      border-radius: 10px;
+      width: 0%;
+      transition: width 1.5s cubic-bezier(0.1, 0.5, 0.1, 1);
+    }
+
+    /* Projects Interactive Showcase */
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .tag {
+      font-size: 0.75rem;
+      font-family: monospace;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(114, 214, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--accent-cyan);
+    }
+    .project-links { display: flex; gap: 16px; margin-top: auto; padding-top: 16px; }
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .project-links a:hover { transform: translateX(3px); }
+
+    /* Interactive Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-node {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .timeline-node::before {
+      content: '';
+      position: absolute;
+      left: -35px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    /* Contact Floating CTA */
+    .contact-cta {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(114, 214, 255, 0.1), rgba(160, 114, 255, 0.1));
+      border: 1px solid var(--border-glow);
+      border-radius: 28px;
+      padding: 60px 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 868px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero p { margin: 0 auto 32px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Particle Interactive Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-badge">TK</div>
+        <span>Tanaya Khade</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+      </ul>
+      <div class="btn-group">
+        <button class="btn btn-secondary" id="themeToggle" aria-label="Toggle Theme">
+          <i data-lucide="sun"></i>
+        </button>
+        <a href="#contact" class="btn btn-primary">Connect <i data-lucide="arrow-right"></i></a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="container hero">
+      <div>
+        <div class="badge-status">
+          <span class="pulse-dot"></span> Available for AI/ML & Data Science Internships
+        </div>
+        <h1>Building Scalable <br/><span class="text-gradient">ML Models & Data Solutions</span></h1>
+        <p>[cite: 2] Proactive B.Sc. Information Technology student specialized in machine learning pipelines, predictive analytics, and deploying production-ready web apps.</p>
+        <div class="btn-group">
+          <a href="#projects" class="btn btn-primary">View Projects <i data-lucide="sparkles"></i></a>
+          <a href="https://github.com/TANAYA30-11" target="_blank" class="btn btn-secondary"><i data-lucide="github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <!-- 3D Interactive Card Header -->
+      <div class="hero-card" id="tiltCard">
+        <div class="card-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="code-block">
+          <p><span class="code-keyword">class</span> <span class="code-func">AI Engineer</span>:</p>
+          <p>&nbsp;&nbsp;def __init__(self):</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;self.name = <span class="code-string">"Tanaya Khade"</span></p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;self.degree = <span class="code-string">"B.Sc. IT (2024-2027)"</span>[cite: 2]</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;self.skills = [<span class="code-string">"Python"</span>, <span class="code-string">"SQL"</span>, <span class="code-string">"ML"</span>][cite: 2]</p>
+          <br/>
+          <p>&nbsp;&nbsp;def deploy_solution(self, dataset):</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;model = self.train_pipeline(dataset)</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> FastAPI.deploy(model)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container reveal">
+      <div class="section-head">
+        <div class="section-eyebrow">01 // Profile</div>
+        <div class="section-title">Driven by Data, Focused on Impact</div>
+      </div>
+      <div class="glass-card">
+        <p style="font-size: 1.1rem; color: var(--muted); margin-bottom: 20px;">
+         [cite: 2] Proactive B.Sc. IT student at Vikas College of Arts, Science and Commerce with hands-on expertise in end-to-end machine learning workflows. Skilled in converting complex datasets into actionable predictive web applications using Python, Scikit-learn, FastAPI, and Streamlit.
+        </p>
+        <div class="grid-3" style="margin-top: 30px;">
+          <div>
+            <h4 style="color:var(--accent-cyan)">Location</h4>
+            <p>Diwa, Thane, Maharashtra[cite: 2]</p>
+          </div>
+          <div>
+            <h4 style="color:var(--accent-purple)">Contact</h4>
+            <p>+91 70213 98581[cite: 2]</p>
+          </div>
+          <div>
+            <h4 style="color:var(--accent-green)">Email</h4>
+            <p>tanayakhade11@gmail.com[cite: 2]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Skills Section -->
+    <section id="skills" class="container reveal">
+      <div class="section-head">
+        <div class="section-eyebrow">02 // Capabilities</div>
+        <div class="section-title">Technical Expertise</div>
+      </div>
+      <div class="grid-2">
+        <div class="glass-card">
+          <h3 style="margin-bottom: 24px;"><i data-lucide="cpu" style="color:var(--accent-cyan)"></i> Machine Learning & Analytics</h3>
+          <div class="skill-item">
+            <div class="skill-info"><span>Python & Data Pipelines</span><span>92%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="92%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Scikit-learn & KNN Classification</span><span>88%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="88%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Pandas & NumPy EDA</span><span>90%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>SQL Database Querying</span><span>80%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="80%"></div></div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom: 24px;"><i data-lucide="globe" style="color:var(--accent-purple)"></i> Web Frameworks & Tools</h3>
+          <div class="skill-item">
+            <div class="skill-info"><span>FastAPI & REST APIs</span><span>85%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Streamlit App Development</span><span>88%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="88%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>Git, GitHub & Render Deployment</span><span>84%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="84%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-info"><span>HTML5, CSS3 & JavaScript</span><span>78%</span></div>
+            <div class="skill-bar-bg"><div class="skill-bar-fill" data-percent="78%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="container reveal">
+      <div class="section-head">
+        <div class="section-eyebrow">03 // Portfolio</div>
+        <div class="section-title">Featured Machine Learning Applications</div>
+      </div>
+      <div class="grid-2">
+        <!-- Project 1 -->
+        <div class="glass-card project-card">
+          <div>
+            <h3>Mental Health Score Prediction App</h3>
+            <p style="color:var(--muted); margin-top: 10px;">
+             [cite: 2] Engineered an end-to-end ML application calculating scores based on user parameters, integrated with FastAPI REST API inference backend and deployed on Render.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">FastAPI</span>
+              <span class="tag">Scikit-learn</span>
+              <span class="tag">Render</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://mental-health-score-prediction-2-5w45.onrender.com" target="_blank">Live Demo <i data-lucide="external-link"></i></a>
+            <a href="https://github.com/TANAYA30-11" target="_blank">GitHub <i data-lucide="github"></i></a>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="glass-card project-card">
+          <div>
+            <h3>Heart Disease Risk Prediction System</h3>
+            <p style="color:var(--muted); margin-top: 10px;">
+             [cite: 2] Developed a diagnostic decision-support system using K-Nearest Neighbors (KNN), data scaling, and model serialization via Streamlit.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Streamlit</span>
+              <span class="tag">KNN</span>
+              <span class="tag">Scikit-learn</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://heart-disease-prediction-bdoqgdft9dactgekhhxxv6.streamlit.app" target="_blank">Live Demo <i data-lucide="external-link"></i></a>
+            <a href="https://github.com/TANAYA30-11" target="_blank">GitHub <i data-lucide="github"></i></a>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="glass-card project-card">
+          <div>
+            <h3>NYC House Type Prediction</h3>
+            <p style="color:var(--muted); margin-top: 10px;">
+             [cite: 2] Classification model categorizing NYC property types using structural, pricing, and geographic indicators with exploratory data analysis and encoding.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">EDA</span>
+              <span class="tag">Render</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://nyc-house-type-prediction-30.onrender.com" target="_blank">Live Demo <i data-lucide="external-link"></i></a>
+            <a href="https://github.com/TANAYA30-11" target="_blank">GitHub <i data-lucide="github"></i></a>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="glass-card project-card">
+          <div>
+            <h3>EDA & Predictive Analytics Portfolio</h3>
+            <p style="color:var(--muted); margin-top: 10px;">
+             [cite: 2] Data science notebooks repository covering Titanic survival predictions, insurance cost regression models, and IPL data analytics.
+            </p>
+            <div class="project-tags">
+              <span class="tag">Jupyter</span>
+              <span class="tag">Regression</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">Data Viz</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/TANAYA30-11" target="_blank">Repository <i data-lucide="github"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience & Education Section -->
+    <section id="experience" class="container reveal">
+      <div class="section-head">
+        <div class="section-eyebrow">04 // Career Journey</div>
+        <div class="section-title">Experience & Education</div>
+      </div>
+      <div class="glass-card">
+        <div class="timeline">
+          <!-- Timeline Item 1 -->
+          <div class="timeline-node">
+            <div style="color:var(--accent-cyan); font-family:monospace; font-size:0.85rem;">NOV 2025 – JAN 2026</div>
+            <h3 style="margin-top: 4px;">Data Science & Analytics Intern / Trainee</h3>
+            <p style="color:var(--accent-purple); font-weight:600;">Imarticus Learning · Thane, Maharashtra</p>
+            <p style="color:var(--muted); margin-top: 8px;">
+             [cite: 2] Completed 120 hours of intensive industry curriculum focusing on statistical modeling and cleaning, transforming, and analyzing complex business datasets using Python, SQL, and Pandas.
+            </p>
+          </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-node">
+            <div style="color:var(--accent-cyan); font-family:monospace; font-size:0.85rem;">JUN 2024 – EXPECTED MAY 2027</div>
+            <h3 style="margin-top: 4px;">Bachelor of Science in Information Technology (B.Sc. IT)</h3>
+            <p style="color:var(--accent-purple); font-weight:600;">Vikas College of Arts, Science and Commerce · Thane</p>
+            <p style="color:var(--muted); margin-top: 8px;">
+             [cite: 2] Academic foundation focusing on core software concepts, database management, mathematics, and machine learning development.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Contact CTA -->
+    <section id="contact" class="container reveal">
+      <div class="contact-cta">
+        <h2 style="font-size: 2.5rem; margin-bottom: 16px;">Let's Build Something Great Together</h2>
+        <p style="color:var(--muted); max-width: 600px; margin: 0 auto 32px;">
+         [cite: 2] Currently seeking an AI/ML Engineering or Data Science Internship to contribute to scalable data-driven solutions.
+        </p>
+        <div class="btn-group" style="justify-content: center;">
+          <button class="btn btn-primary" onclick="triggerConfetti()"><i data-lucide="mail"></i> Email Me</button>
+          <a href="https://linkedin.com/in/tanaya-khade-8302983a5" target="_blank" class="btn btn-secondary"><i data-lucide="linkedin"></i> LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="text-align: center; padding: 40px 0; color: var(--muted); border-top: 1px solid var(--border);">
+    <p>© 2026 Tanaya Khade. Built with interactive Animations & Canvas Effects.</p>
+  </footer>
+
+  <!-- Animation & Interactive JavaScript Logic -->
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Theme Switcher Logic
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.getAttribute('data-theme') === 'light';
+      document.body.setAttribute('data-theme', isLight ? 'dark' : 'light');
+    });
+
+    // Interactive 3D Hero Card Tilt Effect
+    const card = document.getElementById('tiltCard');
+    document.addEventListener('mousemove', (e) => {
+      const xAxis = (window.innerWidth / 2 - e.pageX) / 35;
+      const yAxis = (window.innerHeight / 2 - e.pageY) / 35;
+      if (card) card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    });
+
+    // Scroll Reveal Animation & Progress Bar Filler
+    const observerOptions = { threshold: 0.15 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          // Fill skill bars when in view
+          const bars = entry.target.querySelectorAll('.skill-bar-fill');
+          bars.forEach(bar => bar.style.width = bar.getAttribute('data-percent'));
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Interactive Confetti Button Effect
+    function triggerConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      window.location.href = "mailto:tanayakhade11@gmail.com";
+    }
+
+    // Particle Background Animation Canvas
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(114, 214, 255, 0.25)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 60; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+  </script>
+</body>
+</html>
